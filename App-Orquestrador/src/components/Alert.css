@@ -1,0 +1,87 @@
+.alert-container {
+  /* Fixed positioning allows it to elegantly overlap any UI elements at top */
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 9999;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  min-width: 300px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  
+  /* Initial hidden state */
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  
+  /* Glassmorphism subtle touch */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Visibility classes toggled by the component */
+.alert-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.alert-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+}
+
+/* Styling variants via classes */
+.alert-success {
+  background-color: rgba(16, 185, 129, 0.9);
+  border: 1px solid rgba(16, 185, 129, 1);
+}
+
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.9);
+  border: 1px solid rgba(239, 68, 68, 1);
+}
+
+.alert-aviso {
+  background-color: rgba(245, 158, 11, 0.9);
+  border: 1px solid rgba(245, 158, 11, 1);
+  color: #1e293b; /* escurece o texto no alerta amarelo */
+}
+
+/* Components inside the alert */
+.alert-icon {
+  font-size: 18px;
+}
+
+.alert-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.alert-close-btn {
+  background: rgba(0, 0, 0, 0.1);
+  color: inherit;
+  border: none;
+  font-weight: bold;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.alert-close-btn:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
