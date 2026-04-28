@@ -1,0 +1,55 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.refresh-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.refresh-btn:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-header {
+  display: flex;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.list-header span:nth-child(1) { flex: 2; }
+.list-header span:nth-child(2) { flex: 1; text-align: center; }
+.list-header span:nth-child(3) { flex: 1; text-align: center; }
+.list-header span:nth-child(4) { flex: 1; text-align: right; }
+
+.list-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add custom stripe effect when rendering list */
+.list-body > div:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
