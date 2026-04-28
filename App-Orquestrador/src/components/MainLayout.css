@@ -1,0 +1,35 @@
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.layout-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* Prevents flex flex-child from overflowing */
+}
+
+.main-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+  /* Custom scrollbar for main area */
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-hover) var(--bg-primary);
+}
+
+.main-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-area::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.main-area::-webkit-scrollbar-thumb {
+  background-color: var(--bg-hover);
+  border-radius: 4px;
+}

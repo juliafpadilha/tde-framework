@@ -1,0 +1,93 @@
+.status-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.type-success::before { background-color: var(--status-success); }
+.type-error::before { background-color: var(--status-error); }
+.type-pending::before { background-color: var(--status-pending); }
+
+.status-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.status-icon {
+  font-size: 20px;
+}
+
+.status-body {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.status-count {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.status-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.status-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.trend {
+  font-weight: 600;
+}
+
+.trend.positive {
+  color: var(--status-success);
+}
+
+.trend-label {
+  color: var(--text-secondary);
+}
+
+/* Background gradients for added flair */
+.type-success {
+  background: linear-gradient(145deg, var(--bg-card), var(--status-success-bg));
+}
+
+.type-error {
+  background: linear-gradient(145deg, var(--bg-card), var(--status-error-bg));
+}
+
+.type-pending {
+  background: linear-gradient(145deg, var(--bg-card), var(--status-pending-bg));
+}

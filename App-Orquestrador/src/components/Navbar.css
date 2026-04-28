@@ -1,0 +1,123 @@
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-secondary);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+}
+
+.sidebar-logo {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 24px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.sidebar-logo h1 {
+  font-size: 18px;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+  flex: 1;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: var(--transition);
+  gap: 12px;
+}
+
+.nav-icon {
+  font-size: 20px;
+  filter: grayscale(1);
+  transition: var(--transition);
+}
+
+.nav-link:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-link:hover .nav-icon {
+  filter: grayscale(0);
+}
+
+.nav-link.active {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+}
+
+.nav-link.active .nav-icon {
+  filter: grayscale(0);
+}
+
+.sidebar-footer {
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-primary);
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--status-success);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--status-success);
+  animation: pulse 2s infinite;
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
