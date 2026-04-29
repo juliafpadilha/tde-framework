@@ -8,7 +8,7 @@ function Navbar() {
         <div className="logo-icon">ETL</div>
         <h1>DataManager</h1>
       </div>
-      
+
       <ul className="nav-menu">
         <li className="nav-item">
           <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>
@@ -25,7 +25,7 @@ function Navbar() {
         <li className="nav-item">
           <NavLink to="/sobre" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             <span className="nav-icon">ℹ️</span>
-            Sobre MVP
+            Sobre
           </NavLink>
         </li>
         <li className="nav-item">
@@ -35,7 +35,7 @@ function Navbar() {
           </NavLink>
         </li>
       </ul>
-      
+
       <div className="sidebar-footer">
         <div className="system-status">
           <span className="status-dot"></span>
