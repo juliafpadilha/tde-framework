@@ -1,0 +1,53 @@
+.about-content {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.about-section h2 {
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.about-section p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.about-stack {
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.about-stack h3 {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.stack-badges {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.badge-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.badge-item:hover {
+  background-color: var(--bg-hover);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
