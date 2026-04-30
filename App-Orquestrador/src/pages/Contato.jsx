@@ -92,7 +92,7 @@ function Contato() {
           <ul className="info-list">
             <li>
               <span className="info-icon">📍</span>
-              <span>Central de Operações SP</span>
+              <span>Central de Operações PR</span>
             </li>
             <li>
               <span className="info-icon">📧</span>
@@ -100,7 +100,7 @@ function Contato() {
             </li>
             <li>
               <span className="info-icon">📞</span>
-              <span>+55 (11) 9999-9999</span>
+              <span>+55 (41) 99508-2780</span>
             </li>
           </ul>
         </div>

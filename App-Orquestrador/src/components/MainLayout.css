@@ -8,7 +8,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-width: 0; /* Prevents flex flex-child from overflowing */
 }
 
 .main-area {
@@ -16,7 +15,6 @@
   padding: 24px;
   overflow-y: auto;
   background-color: var(--bg-primary);
-  /* Custom scrollbar for main area */
   scrollbar-width: thin;
   scrollbar-color: var(--bg-hover) var(--bg-primary);
 }

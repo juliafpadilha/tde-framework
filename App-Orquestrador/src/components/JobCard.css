@@ -13,7 +13,6 @@
   transform: translateX(4px);
 }
 
-/* Status variants */
 .job-card.status-sucesso {
   border-left-color: var(--status-success);
 }
