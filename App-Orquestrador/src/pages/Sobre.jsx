@@ -11,7 +11,7 @@ function Sobre() {
           <h2>Nossa Missão</h2>
           <p>
             Nossa plataforma foi projetada para simplificar e trazer total controle e visibilidade para pipelines de dados complexos.
-            Oferecemos um ecossistema robusto, escalável e intuitivo, permitindo que as equipes de <strong>Engenharia de Dados</strong>
+            Oferecemos um ecossistema robusto, escalável e intuitivo, permitindo que as equipes de <strong>Engenharia de Dados </strong>
             possam gerenciar fluxos de ETL/ELT com alta previsibilidade e focar na geração de valor.
           </p>
         </div>
