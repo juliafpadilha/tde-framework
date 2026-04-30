@@ -14,7 +14,6 @@ function App() {
           <Route path="sobre" element={<Sobre />} />
           <Route path="lista" element={<Lista />} />
           <Route path="contato" element={<Contato />} />
-          {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
