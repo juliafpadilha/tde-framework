@@ -5,13 +5,13 @@ function Sobre() {
     <div className="page-container">
       <h1 className="page-title">Sobre a Plataforma</h1>
       <p className="page-subtitle">A mais avançada solução para orquestração de dados</p>
-      
+
       <div className="about-content glass-panel">
         <div className="about-section">
           <h2>Nossa Missão</h2>
           <p>
-            Nossa plataforma foi projetada para simplificar e trazer total controle e visibilidade para pipelines de dados complexos. 
-            Oferecemos um ecossistema robusto, escalável e intuitivo, permitindo que as equipes de <strong>Engenharia de Dados</strong> 
+            Nossa plataforma foi projetada para simplificar e trazer total controle e visibilidade para pipelines de dados complexos.
+            Oferecemos um ecossistema robusto, escalável e intuitivo, permitindo que as equipes de <strong>Engenharia de Dados</strong>
             possam gerenciar fluxos de ETL/ELT com alta previsibilidade e focar na geração de valor.
           </p>
         </div>
@@ -19,8 +19,8 @@ function Sobre() {
         <div className="about-section">
           <h2>Arquitetura de Orquestração</h2>
           <p>
-            Construído para alta performance, o sistema permite modelar, agendar e monitorar fluxos de trabalho na forma de grafos direcionados acíclicos (DAGs). 
-            A plataforma provê tolerância a falhas, gestão nativa de dependências entre tarefas, agendamento cron e uma interface de 
+            Construído para alta performance, o sistema permite modelar, agendar e monitorar fluxos de trabalho na forma de grafos direcionados acíclicos (DAGs).
+            A plataforma provê tolerância a falhas, gestão nativa de dependências entre tarefas, agendamento cron e uma interface de
             monitoramento em tempo real de execuções.
           </p>
         </div>
