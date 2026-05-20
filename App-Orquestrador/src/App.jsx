@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/MainLayout';
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
+import Cadastro from './pages/Cadastro';
 import Lista from './pages/Lista';
 import Contato from './pages/Contato';
 
