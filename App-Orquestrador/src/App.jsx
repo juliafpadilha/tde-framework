@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/MainLayout';
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
+import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Lista from './pages/Lista';
 import Contato from './pages/Contato';
@@ -13,6 +14,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
 
           <Route
