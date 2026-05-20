@@ -3,6 +3,7 @@ import MainLayout from './components/MainLayout';
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
 import Lista from './pages/Lista';
+import Contato from './pages/Contato';
 
 function App() {
   return (
