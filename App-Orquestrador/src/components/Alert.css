@@ -1,5 +1,4 @@
 .alert-container {
-  /* Fixed positioning allows it to elegantly overlap any UI elements at top */
   position: fixed;
   top: 24px;
   left: 50%;
@@ -14,7 +13,6 @@
   padding: 16px 20px;
   border-radius: 12px;
   
-  /* Initial hidden state */
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   
@@ -23,12 +21,10 @@
   font-weight: 500;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   
-  /* Glassmorphism subtle touch */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Visibility classes toggled by the component */
 .alert-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -39,7 +35,6 @@
   transform: translateX(-50%) translateY(-20px);
 }
 
-/* Styling variants via classes */
 .alert-success {
   background-color: rgba(16, 185, 129, 0.9);
   border: 1px solid rgba(16, 185, 129, 1);

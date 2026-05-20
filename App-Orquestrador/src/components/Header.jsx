@@ -1,7 +1,6 @@
 import './Header.css';
 
 function Header() {
-  // Simulating user data for the MVP
   const user = { name: 'Admin', role: 'Data Engineer' };
 
   return (

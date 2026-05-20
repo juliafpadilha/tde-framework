@@ -1,7 +1,6 @@
 import './StatusCard.css';
 
 function StatusCard({ title, count, type }) {
-  // type can be 'success', 'error', 'pending'
   const iconMap = {
     success: '✅',
     error: '❌',
