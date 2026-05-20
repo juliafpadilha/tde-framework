@@ -22,6 +22,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="sobre" element={<Sobre />} />
             <Route path="lista" element={<Lista />} />
+            <Route path="contato" element={<Contato />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
