@@ -3,22 +3,30 @@ import MainLayout from './components/MainLayout';
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
 import Lista from './pages/Lista';
-import Contato from './pages/Contato';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="sobre" element={<Sobre />} />
-          <Route path="lista" element={<Lista />} />
-          <Route path="contato" element={<Contato />} />
-          {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/cadastro" element={<Cadastro />} />
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Home />} />
+            <Route path="sobre" element={<Sobre />} />
+            <Route path="lista" element={<Lista />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
