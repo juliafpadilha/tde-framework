@@ -34,6 +34,12 @@ function Navbar() {
             Contato
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink to="/upload" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <span className="nav-icon">⬆️</span>
+            Upload
+          </NavLink>
+        </li>
       </ul>
 
       <div className="sidebar-footer">
