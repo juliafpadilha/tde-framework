@@ -1,27 +1,42 @@
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 function Header() {
-  const user = { name: 'Admin', role: 'Data Engineer' };
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName = user?.name ?? 'Convidado';
+  const role = user?.role ?? '—';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="header glass-panel">
       <div className="header-left">
         <h2>Orquestrador ETL</h2>
       </div>
-      
+
       <div className="header-right">
         <div className="notifications">
           <span className="bell-icon">🔔</span>
           <span className="badge">3</span>
         </div>
-        
+
         <div className="user-profile">
-          <div className="avatar">{user.name.charAt(0)}</div>
+          <div className="avatar">{displayName.charAt(0).toUpperCase()}</div>
           <div className="user-info">
-            <span className="user-name">{user.name}</span>
-            <span className="user-role">{user.role}</span>
+            <span className="user-name">{displayName}</span>
+            <span className="user-role">{role}</span>
           </div>
         </div>
+
+        <button className="logout-btn" onClick={handleLogout} title="Sair">
+          Sair
+        </button>
       </div>
     </header>
   );
