@@ -31,3 +31,13 @@
   background-color: var(--bg-hover);
   border-radius: 4px;
 }
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .layout-container {
+    flex-direction: column;
+  }
+  .main-area {
+    padding: 16px;
+  }
+}

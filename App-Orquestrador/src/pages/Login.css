@@ -151,3 +151,13 @@
   color: var(--accent);
   background: rgba(59, 130, 246, 0.06);
 }
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 16px;
+  }
+  .login-screen {
+    padding: 16px;
+  }
+}

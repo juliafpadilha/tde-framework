@@ -52,3 +52,14 @@
 .list-body > div:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.02);
 }
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .list-header {
+    display: none;
+  }
+}
