@@ -1,19 +1,16 @@
 import { readUsers, writeUsers, hashPassword } from './authHelpers';
+import { validateRegister } from './validators';
 
 export async function register({ username, password, name, email }) {
   const u = username?.trim();
   const n = name?.trim();
   const e = email?.trim();
 
-  // Validações
-  if (!u || !password || !n || !e) {
-    throw new Error('Preencha todos os campos.');
-  }
-  if (password.length < 4) {
-    throw new Error('A senha deve ter pelo menos 4 caracteres.');
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-    throw new Error('Email inválido.');
+  // Validações de formato (centralizadas em validators.js)
+  const errors = validateRegister({ name: n, email: e, username: u, password });
+  const firstMessage = Object.values(errors)[0];
+  if (firstMessage) {
+    throw new Error(firstMessage);
   }
 
   const users = readUsers();

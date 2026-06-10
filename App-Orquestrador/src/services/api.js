@@ -1,29 +1,66 @@
-import axios from 'axios';
-
+const BASE_URL = 'https://jsonplaceholder.typicode.com';
+const TIMEOUT = 10000;
 const STORAGE_KEY = 'tde.auth';
 
-const api = axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com',
-  timeout: 10000,
-});
-
-api.interceptors.request.use((config) => {
+// Equivalente ao interceptor de request do axios: injeta o token Bearer
+// salvo no localStorage em todas as requisições.
+function authHeaders() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const { token } = JSON.parse(raw);
-      if (token) config.headers.Authorization = `Bearer ${token}`;
+      if (token) return { Authorization: `Bearer ${token}` };
     }
   } catch {
     /* ignore parse errors */
   }
-  return config;
-});
+  return {};
+}
+
+// Cliente HTTP baseado em fetch que reproduz o comportamento do axios:
+// baseURL, timeout, header de autenticação, erro em status fora de 2xx
+// e parsing automático de JSON.
+async function request(path, { method = 'GET', params, body, headers } = {}) {
+  const url = new URL(`${BASE_URL}${path}`);
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value != null) url.searchParams.set(key, value);
+    });
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT);
+
+  let res;
+  try {
+    res = await fetch(url, {
+      method,
+      headers: { ...authHeaders(), ...headers },
+      body,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error(`Tempo limite de ${TIMEOUT / 1000}s excedido.`, { cause: err });
+    }
+    throw new Error('Falha de conexão com o servidor.', { cause: err });
+  } finally {
+    clearTimeout(timer);
+  }
+
+  // fetch não rejeita em status de erro; replicamos o comportamento do axios.
+  if (!res.ok) {
+    throw new Error(`Erro ${res.status}: ${res.statusText || 'requisição falhou'}`);
+  }
+
+  if (res.status === 204) return null;
+  return res.json();
+}
 
 const STATUS_POOL = ['sucesso', 'erro', 'pendente'];
 
 export async function fetchJobs() {
-  const { data } = await api.get('/posts', { params: { _limit: 12 } });
+  const data = await request('/posts', { params: { _limit: 12 } });
 
   return data.map((post) => {
     const status = STATUS_POOL[post.id % STATUS_POOL.length];
@@ -52,10 +89,8 @@ export async function uploadFile({ file, description }) {
   formData.append('type', file.type);
   formData.append('description', description ?? '');
 
-  const { data } = await api.post('/posts', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  // Não definimos Content-Type manualmente: o navegador adiciona
+  // multipart/form-data com o boundary correto para o FormData.
+  const data = await request('/posts', { method: 'POST', body: formData });
   return data;
 }
-
-export default api;

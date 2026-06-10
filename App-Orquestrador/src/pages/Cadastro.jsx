@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { validateCadastro } from '../services/validators';
 import './Login.css';
 
 function Cadastro() {
@@ -14,6 +15,7 @@ function Cadastro() {
     password: '',
     confirm: '',
   });
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,16 +23,17 @@ function Cadastro() {
 
   const update = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    // Limpa o erro do campo assim que o usuário começa a corrigi-lo.
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (form.password !== form.confirm) {
-      setError('As senhas não coincidem.');
-      return;
-    }
+    const fieldErrors = validateCadastro(form);
+    setErrors(fieldErrors);
+    if (Object.keys(fieldErrors).length > 0) return;
 
     setLoading(true);
     try {
@@ -56,7 +59,7 @@ function Cadastro() {
 
   return (
     <div className="login-screen">
-      <form className="login-card glass-panel" onSubmit={handleSubmit}>
+      <form className="login-card glass-panel" onSubmit={handleSubmit} noValidate>
         <div className="login-brand">
           <div className="logo-icon">ETL</div>
           <h1>DataManager</h1>
@@ -67,60 +70,70 @@ function Cadastro() {
           <span>Nome completo</span>
           <input
             type="text"
+            className={errors.name ? 'has-error' : ''}
             value={form.name}
             onChange={update('name')}
             placeholder="Mateus Bailo"
             autoComplete="name"
-            required
+            aria-invalid={!!errors.name}
           />
+          {errors.name && <span className="field-error">{errors.name}</span>}
         </label>
 
         <label className="login-field">
           <span>Email</span>
           <input
             type="email"
+            className={errors.email ? 'has-error' : ''}
             value={form.email}
             onChange={update('email')}
             placeholder="voce@exemplo.com"
             autoComplete="email"
-            required
+            aria-invalid={!!errors.email}
           />
+          {errors.email && <span className="field-error">{errors.email}</span>}
         </label>
 
         <label className="login-field">
           <span>Usuário</span>
           <input
             type="text"
+            className={errors.username ? 'has-error' : ''}
             value={form.username}
             onChange={update('username')}
             placeholder="ex: mateus"
             autoComplete="username"
-            required
+            aria-invalid={!!errors.username}
           />
+          {errors.username && <span className="field-error">{errors.username}</span>}
         </label>
 
         <label className="login-field">
           <span>Senha</span>
           <input
             type="password"
+            className={errors.password ? 'has-error' : ''}
             value={form.password}
             onChange={update('password')}
             placeholder="mínimo 4 caracteres"
             autoComplete="new-password"
-            required
+            aria-invalid={!!errors.password}
           />
+          {errors.password && <span className="field-error">{errors.password}</span>}
         </label>
 
         <label className="login-field">
           <span>Confirmar senha</span>
           <input
             type="password"
+            className={errors.confirm ? 'has-error' : ''}
             value={form.confirm}
             onChange={update('confirm')}
             placeholder="repita a senha"
             autoComplete="new-password"
-            required
+            aria-invalid={!!errors.confirm}
           />
+          {errors.confirm && <span className="field-error">{errors.confirm}</span>}
         </label>
 
         {error && <div className="login-error">{error}</div>}

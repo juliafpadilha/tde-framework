@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react';
 import Alert from '../components/Alert';
 import { uploadFile } from '../services/api';
+import { validateImageFile, maxLength } from '../services/validators';
 import './Upload.css';
 
 const MAX_SIZE_MB = 5;
 const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
+const MAX_DESCRIPTION = 280;
 
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -27,12 +29,9 @@ function Upload() {
     setResponse(null);
     if (!selected) return;
 
-    if (!ACCEPTED.includes(selected.type)) {
-      setValidationError('Formato inválido. Use PNG, JPG, WEBP ou GIF.');
-      return;
-    }
-    if (selected.size > MAX_SIZE_MB * 1024 * 1024) {
-      setValidationError(`Arquivo excede ${MAX_SIZE_MB}MB.`);
+    const fileError = validateImageFile(selected, { accepted: ACCEPTED, maxSizeMB: MAX_SIZE_MB });
+    if (fileError) {
+      setValidationError(fileError);
       return;
     }
 
@@ -62,8 +61,12 @@ function Upload() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!file) {
-      setValidationError('Selecione uma imagem antes de enviar.');
+
+    const submitError =
+      validateImageFile(file, { accepted: ACCEPTED, maxSizeMB: MAX_SIZE_MB }) ||
+      maxLength(description, MAX_DESCRIPTION, 'Descrição');
+    if (submitError) {
+      setValidationError(submitError);
       return;
     }
 
@@ -98,10 +101,10 @@ function Upload() {
 
       <h1 className="page-title">Upload de Imagem</h1>
       <p className="page-subtitle">
-        Envio multipart/form-data via axios para a API REST
+        Envio multipart/form-data via fetch API para a API REST
       </p>
 
-      <form className="upload-form glass-panel" onSubmit={onSubmit}>
+      <form className="upload-form glass-panel" onSubmit={onSubmit} noValidate>
         <div
           className={`dropzone ${preview ? 'dropzone-has-file' : ''}`}
           onClick={() => inputRef.current?.click()}
@@ -144,7 +147,10 @@ function Upload() {
           <span>Descrição (opcional)</span>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (validationError) setValidationError('');
+            }}
             placeholder="Contexto da imagem (ex: print do dashboard)"
             rows={3}
           />

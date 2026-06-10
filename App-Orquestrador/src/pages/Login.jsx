@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { validateLogin } from '../services/validators';
 import './Login.css';
 
 function Login() {
@@ -13,14 +14,24 @@ function Login() {
 
   const [username, setUsername] = useState(prefillUsername);
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   if (isAuthenticated) return <Navigate to={from} replace />;
 
+  // Limpa o erro de um campo assim que o usuário começa a corrigi-lo.
+  const clearFieldError = (field) =>
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const fieldErrors = validateLogin({ username, password });
+    setErrors(fieldErrors);
+    if (Object.keys(fieldErrors).length > 0) return;
+
     setLoading(true);
     try {
       await login({ username: username.trim(), password });
@@ -34,7 +45,7 @@ function Login() {
 
   return (
     <div className="login-screen">
-      <form className="login-card glass-panel" onSubmit={handleSubmit}>
+      <form className="login-card glass-panel" onSubmit={handleSubmit} noValidate>
         <div className="login-brand">
           <div className="logo-icon">ETL</div>
           <h1>DataManager</h1>
@@ -51,24 +62,34 @@ function Login() {
           <span>Usuário</span>
           <input
             type="text"
+            className={errors.username ? 'has-error' : ''}
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              clearFieldError('username');
+            }}
             placeholder="seu usuário"
             autoComplete="username"
-            required
+            aria-invalid={!!errors.username}
           />
+          {errors.username && <span className="field-error">{errors.username}</span>}
         </label>
 
         <label className="login-field">
           <span>Senha</span>
           <input
             type="password"
+            className={errors.password ? 'has-error' : ''}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              clearFieldError('password');
+            }}
             placeholder="••••••••"
             autoComplete="current-password"
-            required
+            aria-invalid={!!errors.password}
           />
+          {errors.password && <span className="field-error">{errors.password}</span>}
         </label>
 
         {error && <div className="login-error">{error}</div>}
