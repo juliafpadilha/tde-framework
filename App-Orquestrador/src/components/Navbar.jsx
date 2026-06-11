@@ -24,8 +24,8 @@ function Navbar() {
         </li>
         <li className="nav-item">
           <NavLink to="/upload" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            <span className="nav-icon">📤</span>
-            Upload
+            <span className="nav-icon">➕</span>
+            Novo Job
           </NavLink>
         </li>
         <li className="nav-item">

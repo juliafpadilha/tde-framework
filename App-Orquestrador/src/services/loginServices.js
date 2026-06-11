@@ -1,27 +1,17 @@
-import { readUsers, hashPassword } from './authHelpers';
+import { loginUser } from './api';
 import { validateLogin } from './validators';
 
 export async function login({ username, password }) {
-  // Validações (centralizadas em validators.js)
+  // Validações de formato (centralizadas em validators.js)
   const errors = validateLogin({ username, password });
   const firstMessage = Object.values(errors)[0];
   if (firstMessage) {
     throw new Error(firstMessage);
   }
 
-  const u = username.trim();
-  const users = readUsers();
-  const found = users.find((x) => x.username.toLowerCase() === u.toLowerCase());
+  // Chama a API real do backend
+  const data = await loginUser({ username: username.trim(), password });
 
-  if (!found) {
-    throw new Error('Usuário não encontrado. Cadastre-se primeiro.');
-  }
-
-  const passwordHash = await hashPassword(password);
-  if (passwordHash !== found.passwordHash) {
-    throw new Error('Senha incorreta.');
-  }
-
-  // Se tudo estiver certo, retorna o usuário encontrado
-  return found;
+  // Retorna token + dados do usuário vindos do backend
+  return data;
 }

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://jsonplaceholder.typicode.com';
+const BASE_URL = 'http://localhost:3000';
 const TIMEOUT = 10000;
 const STORAGE_KEY = 'tde.auth';
 
@@ -20,7 +20,7 @@ function authHeaders() {
 // Cliente HTTP baseado em fetch que reproduz o comportamento do axios:
 // baseURL, timeout, header de autenticação, erro em status fora de 2xx
 // e parsing automático de JSON.
-async function request(path, { method = 'GET', params, body, headers } = {}) {
+async function request(path, { method = 'GET', params, body, headers, isFormData = false } = {}) {
   const url = new URL(`${BASE_URL}${path}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -31,11 +31,15 @@ async function request(path, { method = 'GET', params, body, headers } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT);
 
+  // Se for FormData, não definimos Content-Type (o browser faz isso).
+  // Caso contrário, definimos como JSON.
+  const defaultHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
+
   let res;
   try {
     res = await fetch(url, {
       method,
-      headers: { ...authHeaders(), ...headers },
+      headers: { ...defaultHeaders, ...authHeaders(), ...headers },
       body,
       signal: controller.signal,
     });
@@ -50,47 +54,56 @@ async function request(path, { method = 'GET', params, body, headers } = {}) {
 
   // fetch não rejeita em status de erro; replicamos o comportamento do axios.
   if (!res.ok) {
-    throw new Error(`Erro ${res.status}: ${res.statusText || 'requisição falhou'}`);
+    // Tenta extrair a mensagem de erro do JSON de resposta
+    let errorMessage = `Erro ${res.status}: ${res.statusText || 'requisição falhou'}`;
+    try {
+      const errorData = await res.json();
+      if (errorData.error) errorMessage = errorData.error;
+    } catch {
+      /* resposta não é JSON */
+    }
+    throw new Error(errorMessage);
   }
 
   if (res.status === 204) return null;
   return res.json();
 }
 
-const STATUS_POOL = ['sucesso', 'erro', 'pendente'];
+// -----------------------------------------------
+// Auth
+// -----------------------------------------------
 
-export async function fetchJobs() {
-  const data = await request('/posts', { params: { _limit: 12 } });
-
-  return data.map((post) => {
-    const status = STATUS_POOL[post.id % STATUS_POOL.length];
-    const minutes = ((post.id * 7) % 55) + 1;
-    const seconds = (post.id * 13) % 60;
-    return {
-      id: post.id,
-      name: post.title
-        .replace(/\s+/g, '_')
-        .replace(/[^a-zA-Z0-9_]/g, '')
-        .slice(0, 32) || `Job_${post.id}`,
-      status,
-      duration: status === 'pendente'
-        ? '--'
-        : `${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`,
-      lastRun: status === 'pendente' ? 'Aguardando' : `Hoje, ${String(8 + (post.id % 12)).padStart(2, '0')}:${String((post.id * 11) % 60).padStart(2, '0')}`,
-    };
+export async function loginUser({ username, password }) {
+  return request('/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
   });
 }
 
-export async function uploadFile({ file, description }) {
+export async function registerUser({ name, email, username, password }) {
+  return request('/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, username, password }),
+  });
+}
+
+// -----------------------------------------------
+// Jobs
+// -----------------------------------------------
+
+export async function fetchJobs() {
+  return request('/jobs');
+}
+
+export async function createJob({ name, status, file }) {
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('name', file.name);
-  formData.append('size', file.size);
-  formData.append('type', file.type);
-  formData.append('description', description ?? '');
+  formData.append('name', name);
+  formData.append('status', status || 'pendente');
+  if (file) {
+    formData.append('file', file);
+  }
 
   // Não definimos Content-Type manualmente: o navegador adiciona
   // multipart/form-data com o boundary correto para o FormData.
-  const data = await request('/posts', { method: 'POST', body: formData });
-  return data;
+  return request('/jobs', { method: 'POST', body: formData, isFormData: true });
 }

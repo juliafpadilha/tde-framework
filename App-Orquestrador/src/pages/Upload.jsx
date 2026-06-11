@@ -1,12 +1,10 @@
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
-import { uploadFile } from '../services/api';
-import { validateImageFile, maxLength } from '../services/validators';
+import { createJob } from '../services/api';
 import './Upload.css';
 
-const MAX_SIZE_MB = 5;
-const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
-const MAX_DESCRIPTION = 280;
+const MAX_SIZE_MB = 10;
 
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -15,30 +13,25 @@ function formatBytes(bytes) {
 }
 
 function Upload() {
+  const navigate = useNavigate();
   const inputRef = useRef(null);
   const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [description, setDescription] = useState('');
+  const [jobName, setJobName] = useState('');
+  const [status, setStatus] = useState('pendente');
   const [validationError, setValidationError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [response, setResponse] = useState(null);
   const [alertConfig, setAlertConfig] = useState({ isVisible: false, message: '', type: '' });
 
   const handleFile = (selected) => {
     setValidationError('');
-    setResponse(null);
     if (!selected) return;
 
-    const fileError = validateImageFile(selected, { accepted: ACCEPTED, maxSizeMB: MAX_SIZE_MB });
-    if (fileError) {
-      setValidationError(fileError);
+    if (selected.size > MAX_SIZE_MB * 1024 * 1024) {
+      setValidationError(`Arquivo excede ${MAX_SIZE_MB}MB.`);
       return;
     }
 
     setFile(selected);
-    const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target.result);
-    reader.readAsDataURL(selected);
   };
 
   const onChange = (e) => handleFile(e.target.files?.[0]);
@@ -52,37 +45,34 @@ function Upload() {
 
   const reset = () => {
     setFile(null);
-    setPreview(null);
-    setDescription('');
+    setJobName('');
+    setStatus('pendente');
     setValidationError('');
-    setResponse(null);
     if (inputRef.current) inputRef.current.value = '';
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const submitError =
-      validateImageFile(file, { accepted: ACCEPTED, maxSizeMB: MAX_SIZE_MB }) ||
-      maxLength(description, MAX_DESCRIPTION, 'Descrição');
-    if (submitError) {
-      setValidationError(submitError);
+    if (!jobName.trim()) {
+      setValidationError('O nome do Job é obrigatório.');
       return;
     }
 
     setSubmitting(true);
     try {
-      const data = await uploadFile({ file, description });
-      setResponse(data);
+      await createJob({ name: jobName.trim(), status, file });
       setAlertConfig({
         isVisible: true,
-        message: `Upload concluído (id #${data.id ?? '—'}).`,
+        message: 'Job criado com sucesso!',
         type: 'success',
       });
+      // Redireciona para a lista após 1.5s
+      setTimeout(() => navigate('/lista'), 1500);
     } catch (err) {
       setAlertConfig({
         isVisible: true,
-        message: err.message || 'Falha no upload',
+        message: err.message || 'Falha ao criar Job.',
         type: 'error',
       });
     } finally {
@@ -99,33 +89,76 @@ function Upload() {
         onClose={() => setAlertConfig((p) => ({ ...p, isVisible: false }))}
       />
 
-      <h1 className="page-title">Upload de Imagem</h1>
+      <h1 className="page-title">Criar Novo Job</h1>
       <p className="page-subtitle">
-        Envio multipart/form-data via fetch API para a API REST
+        Preencha os dados e anexe o arquivo de configuração/log do Job
       </p>
 
       <form className="upload-form glass-panel" onSubmit={onSubmit} noValidate>
+        {/* Nome do Job */}
+        <label className="upload-field">
+          <span>Nome do Job *</span>
+          <input
+            type="text"
+            value={jobName}
+            onChange={(e) => {
+              setJobName(e.target.value);
+              if (validationError) setValidationError('');
+            }}
+            placeholder="Ex: Extracao_API_Vendas"
+          />
+        </label>
+
+        {/* Status */}
+        <label className="upload-field">
+          <span>Status</span>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem 1rem',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              color: '#fff',
+              fontSize: '0.95rem',
+              outline: 'none',
+            }}
+          >
+            <option value="pendente">Pendente</option>
+            <option value="sucesso">Sucesso</option>
+            <option value="erro">Erro</option>
+          </select>
+        </label>
+
+        {/* Upload de Arquivo */}
         <div
-          className={`dropzone ${preview ? 'dropzone-has-file' : ''}`}
+          className={`dropzone ${file ? 'dropzone-has-file' : ''}`}
           onClick={() => inputRef.current?.click()}
           onDrop={onDrop}
           onDragOver={onDragOver}
         >
-          {preview ? (
-            <img src={preview} alt="Preview" className="preview-img" />
+          {file ? (
+            <div className="dropzone-empty">
+              <span className="dropzone-icon">📄</span>
+              <p><strong>{file.name}</strong></p>
+              <span className="dropzone-hint">
+                {file.type || 'arquivo'} • {formatBytes(file.size)}
+              </span>
+            </div>
           ) : (
             <div className="dropzone-empty">
-              <span className="dropzone-icon">🖼️</span>
-              <p>Clique ou arraste uma imagem aqui</p>
+              <span className="dropzone-icon">📁</span>
+              <p>Clique ou arraste o arquivo de configuração</p>
               <span className="dropzone-hint">
-                PNG, JPG, WEBP ou GIF • até {MAX_SIZE_MB}MB
+                Qualquer formato • até {MAX_SIZE_MB}MB
               </span>
             </div>
           )}
           <input
             ref={inputRef}
             type="file"
-            accept={ACCEPTED.join(',')}
             onChange={onChange}
             hidden
           />
@@ -135,26 +168,13 @@ function Upload() {
           <div className="file-meta">
             <div>
               <strong>{file.name}</strong>
-              <span>{file.type} • {formatBytes(file.size)}</span>
+              <span>{file.type || 'arquivo'} • {formatBytes(file.size)}</span>
             </div>
-            <button type="button" className="link-btn" onClick={reset}>
+            <button type="button" className="link-btn" onClick={() => { setFile(null); if (inputRef.current) inputRef.current.value = ''; }}>
               Remover
             </button>
           </div>
         )}
-
-        <label className="upload-field">
-          <span>Descrição (opcional)</span>
-          <textarea
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-              if (validationError) setValidationError('');
-            }}
-            placeholder="Contexto da imagem (ex: print do dashboard)"
-            rows={3}
-          />
-        </label>
 
         {validationError && <div className="upload-error">{validationError}</div>}
 
@@ -162,9 +182,9 @@ function Upload() {
           <button
             type="submit"
             className="upload-submit"
-            disabled={submitting || !file}
+            disabled={submitting}
           >
-            {submitting ? 'Enviando...' : 'Enviar imagem'}
+            {submitting ? 'Criando...' : '➕ Criar Job'}
           </button>
           <button
             type="button"
@@ -175,13 +195,6 @@ function Upload() {
             Limpar
           </button>
         </div>
-
-        {response && (
-          <div className="upload-response">
-            <strong>Resposta da API:</strong>
-            <pre>{JSON.stringify(response, null, 2)}</pre>
-          </div>
-        )}
       </form>
     </div>
   );

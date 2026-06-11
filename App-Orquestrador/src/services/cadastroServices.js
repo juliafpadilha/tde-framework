@@ -1,4 +1,4 @@
-import { readUsers, writeUsers, hashPassword } from './authHelpers';
+import { registerUser } from './api';
 import { validateRegister } from './validators';
 
 export async function register({ username, password, name, email }) {
@@ -13,22 +13,8 @@ export async function register({ username, password, name, email }) {
     throw new Error(firstMessage);
   }
 
-  const users = readUsers();
-  if (users.some((x) => x.username.toLowerCase() === u.toLowerCase())) {
-    throw new Error('Usuário já cadastrado.');
-  }
+  // Chama a API real do backend
+  const data = await registerUser({ name: n, email: e, username: u, password });
 
-  const passwordHash = await hashPassword(password);
-  const newUser = {
-    username: u,
-    name: n,
-    email: e,
-    passwordHash,
-    role: 'Data Engineer',
-    createdAt: new Date().toISOString(),
-  };
-
-  writeUsers([...users, newUser]);
-
-  return newUser;
+  return data;
 }

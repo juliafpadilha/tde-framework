@@ -1,10 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import JobCard from '../components/JobCard';
+import { fetchJobs } from '../services/api';
 import './Lista.css';
 
 function Lista() {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [alertConfig, setAlertConfig] = useState({ isVisible: false, message: '', type: '' });
+
+  const loadJobs = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchJobs();
+      setJobs(data);
+    } catch (err) {
+      setAlertConfig({
+        isVisible: true,
+        message: err.message || 'Erro ao carregar jobs.',
+        type: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadJobs();
+  }, []);
 
   const handleRunJob = (jobName) => {
     setAlertConfig({
@@ -15,13 +40,6 @@ function Lista() {
   };
 
   const closeAlert = () => setAlertConfig(prev => ({ ...prev, isVisible: false }));
-  const jobsData = [
-    { id: 1, name: 'Extracao_API_Vendas', status: 'sucesso', duration: '05m 12s', lastRun: 'Hoje, 08:00' },
-    { id: 2, name: 'Carga_DWH_Fato_Vendas', status: 'sucesso', duration: '12m 45s', lastRun: 'Hoje, 08:30' },
-    { id: 3, name: 'Normalizacao_Dados_Clientes', status: 'erro', duration: '01m 22s', lastRun: 'Hoje, 09:15' },
-    { id: 4, name: 'Ingestao_Logs_Servidor', status: 'pendente', duration: '--', lastRun: 'Aguardando' },
-    { id: 5, name: 'Calculo_Metricas_Mensais', status: 'sucesso', duration: '45m 00s', lastRun: 'Ontem, 23:00' },
-  ];
 
   return (
     <div className="page-container">
@@ -36,28 +54,45 @@ function Lista() {
           <h1 className="page-title">Jobs de ETL</h1>
           <p className="page-subtitle">Acompanhe as execuções recentes de data pipelines</p>
         </div>
-        <button className="refresh-btn">🔄 Atualizar</button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="refresh-btn" onClick={() => navigate('/upload')}>
+            ➕ Novo Job
+          </button>
+          <button className="refresh-btn" onClick={loadJobs}>
+            🔄 Atualizar
+          </button>
+        </div>
       </div>
 
       <div className="jobs-list glass-panel">
         <div className="list-header">
           <span>Nome do Job</span>
-          <span style={{textAlign: 'center'}}>Duração</span>
+          <span style={{textAlign: 'center'}}>Arquivo</span>
           <span style={{textAlign: 'center'}}>Status</span>
           <span style={{textAlign: 'right'}}>Ações</span>
         </div>
         
         <div className="list-body">
-          {jobsData.map(job => (
-            <JobCard 
-              key={job.id}
-              name={job.name}
-              status={job.status}
-              duration={job.duration}
-              lastRun={job.lastRun}
-              onRun={() => handleRunJob(job.name)}
-            />
-          ))}
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
+              Carregando jobs...
+            </div>
+          ) : jobs.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
+              Nenhum job encontrado.
+            </div>
+          ) : (
+            jobs.map(job => (
+              <JobCard 
+                key={job.id}
+                name={job.name}
+                status={job.status}
+                duration={job.file_url ? '📎 Sim' : '—'}
+                lastRun={new Date(job.created_at).toLocaleString('pt-BR')}
+                onRun={() => handleRunJob(job.name)}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

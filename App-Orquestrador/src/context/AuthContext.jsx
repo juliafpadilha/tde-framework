@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { login } from '../services/loginServices';
 import { register } from '../services/cadastroServices';
-import { readUsers } from '../services/authHelpers';
 
 const SESSION_KEY = 'tde.auth';
 
@@ -26,17 +25,14 @@ export function AuthProvider({ children }) {
   }, [auth]);
 
   const handleRegister = async (userData) => {
-    const newUser = await register(userData);
-    return newUser;
+    const result = await register(userData);
+    return result;
   };
 
   const handleLogin = async (credentials) => {
-    const foundUser = await login(credentials);
-    return startSession(foundUser);
-  };
+    // O backend retorna { token, user }
+    const { token, user } = await login(credentials);
 
-  const startSession = (user) => {
-    const token = btoa(`${user.username}:${Date.now()}`);
     const session = {
       token,
       user: {
@@ -47,13 +43,12 @@ export function AuthProvider({ children }) {
       },
       issuedAt: new Date().toISOString(),
     };
+
     setAuth(session);
     return session;
   };
 
   const logout = () => setAuth(null);
-
-  const hasUsers = () => readUsers().length > 0;
 
   return (
     <AuthContext.Provider
@@ -64,7 +59,6 @@ export function AuthProvider({ children }) {
         login: handleLogin,
         register: handleRegister,
         logout,
-        hasUsers,
       }}
     >
       {children}
