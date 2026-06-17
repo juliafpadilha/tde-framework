@@ -95,10 +95,9 @@ export async function fetchJobs() {
   return request('/jobs');
 }
 
-export async function createJob({ name, status, file }) {
+export async function createJob({ name, file }) {
   const formData = new FormData();
   formData.append('name', name);
-  formData.append('status', status || 'pendente');
   if (file) {
     formData.append('file', file);
   }
@@ -106,4 +105,29 @@ export async function createJob({ name, status, file }) {
   // Não definimos Content-Type manualmente: o navegador adiciona
   // multipart/form-data com o boundary correto para o FormData.
   return request('/jobs', { method: 'POST', body: formData, isFormData: true });
+}
+
+export async function updateJob(id, { name, file }) {
+  const formData = new FormData();
+  formData.append('name', name);
+  if (file) {
+    formData.append('file', file);
+  }
+
+  return request(`/jobs/${id}`, { method: 'PUT', body: formData, isFormData: true });
+}
+
+export async function runJob(id) {
+  return request(`/jobs/${id}/run`, { method: 'POST' });
+}
+
+// -----------------------------------------------
+// Messages
+// -----------------------------------------------
+
+export async function sendMessage({ nome, email, assunto, mensagem }) {
+  return request('/messages', {
+    method: 'POST',
+    body: JSON.stringify({ nome, email, assunto, mensagem }),
+  });
 }

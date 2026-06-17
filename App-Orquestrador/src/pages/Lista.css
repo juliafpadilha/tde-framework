@@ -2,7 +2,15 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 16px;
   margin-bottom: 24px;
+}
+
+.page-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .refresh-btn {
@@ -12,7 +20,7 @@
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: 500;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   transition: var(--transition);
@@ -26,10 +34,13 @@
 .jobs-list {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .list-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  gap: 16px;
   padding: 16px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-size: 12px;
@@ -39,10 +50,14 @@
   color: var(--text-secondary);
 }
 
-.list-header span:nth-child(1) { flex: 2; }
-.list-header span:nth-child(2) { flex: 1; text-align: center; }
-.list-header span:nth-child(3) { flex: 1; text-align: center; }
-.list-header span:nth-child(4) { flex: 1; text-align: right; }
+.list-header span:nth-child(2),
+.list-header span:nth-child(3) {
+  text-align: center;
+}
+
+.list-header span:nth-child(4) {
+  text-align: right;
+}
 
 .list-body {
   display: flex;
@@ -53,13 +68,149 @@
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* Responsividade */
+.list-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.edit-modal {
+  width: min(520px, 100%);
+  padding: 24px;
+}
+
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.edit-modal-header h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.edit-modal-header p {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.edit-form input,
+.edit-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+  font: inherit;
+  outline: none;
+}
+
+.edit-form input:focus,
+.edit-form select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
+}
+
+.edit-form select option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancel-btn,
+.save-btn {
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.save-btn {
+  background: var(--accent);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.save-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.cancel-btn:disabled,
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
-    gap: 16px;
   }
+
+  .page-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .list-header {
     display: none;
+  }
+
+  .edit-actions {
+    flex-direction: column-reverse;
   }
 }

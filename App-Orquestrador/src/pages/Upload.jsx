@@ -17,7 +17,6 @@ function Upload() {
   const inputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [jobName, setJobName] = useState('');
-  const [status, setStatus] = useState('pendente');
   const [validationError, setValidationError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ isVisible: false, message: '', type: '' });
@@ -46,7 +45,6 @@ function Upload() {
   const reset = () => {
     setFile(null);
     setJobName('');
-    setStatus('pendente');
     setValidationError('');
     if (inputRef.current) inputRef.current.value = '';
   };
@@ -61,7 +59,7 @@ function Upload() {
 
     setSubmitting(true);
     try {
-      await createJob({ name: jobName.trim(), status, file });
+      await createJob({ name: jobName.trim(), file });
       setAlertConfig({
         isVisible: true,
         message: 'Job criado com sucesso!',
@@ -107,29 +105,6 @@ function Upload() {
             }}
             placeholder="Ex: Extracao_API_Vendas"
           />
-        </label>
-
-        {/* Status */}
-        <label className="upload-field">
-          <span>Status</span>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem 1rem',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '0.95rem',
-              outline: 'none',
-            }}
-          >
-            <option value="pendente">Pendente</option>
-            <option value="sucesso">Sucesso</option>
-            <option value="erro">Erro</option>
-          </select>
         </label>
 
         {/* Upload de Arquivo */}

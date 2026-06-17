@@ -1,10 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../services/loginServices';
 import { register } from '../services/cadastroServices';
+import { AuthContext } from './authContextValue';
 
 const SESSION_KEY = 'tde.auth';
-
-const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [auth, setAuth] = useState(() => {
@@ -64,10 +63,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
 }

@@ -2,9 +2,9 @@ import './StatusCard.css';
 
 function StatusCard({ title, count, type }) {
   const iconMap = {
-    success: '✅',
-    error: '❌',
-    pending: '⏳'
+    success: 'OK',
+    error: '!',
+    pending: '...',
   };
 
   return (
@@ -15,11 +15,7 @@ function StatusCard({ title, count, type }) {
       </div>
       <div className="status-body">
         <span className="status-count">{count}</span>
-        <span className="status-label">Jobs Totais</span>
-      </div>
-      <div className="status-footer">
-        <span className="trend positive">↑ 12%</span>
-        <span className="trend-label">desde ontem</span>
+        <span className="status-label">jobs</span>
       </div>
     </div>
   );

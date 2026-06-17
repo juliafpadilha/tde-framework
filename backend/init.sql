@@ -33,12 +33,15 @@ CREATE TABLE IF NOT EXISTS jobs (
 );
 
 -- -----------------------------------------------
--- Dados iniciais: Jobs de exemplo
--- (user_id NULL pois ainda não há usuários cadastrados)
+-- Tabela: messages
 -- -----------------------------------------------
-INSERT INTO jobs (name, status, file_url) VALUES
-  ('Extracao_API_Vendas',         'sucesso',   NULL),
-  ('Carga_DWH_Fato_Vendas',      'sucesso',   NULL),
-  ('Normalizacao_Dados_Clientes', 'erro',      NULL),
-  ('Ingestao_Logs_Servidor',      'pendente',  NULL),
-  ('Calculo_Metricas_Mensais',    'sucesso',   NULL);
+CREATE TABLE IF NOT EXISTS messages (
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(100)  NOT NULL,
+  email       VARCHAR(150)  NOT NULL,
+  subject     VARCHAR(100)  NOT NULL,
+  message     TEXT          NOT NULL,
+  user_id     INTEGER       REFERENCES users(id) ON DELETE SET NULL,
+  created_at  TIMESTAMP     DEFAULT NOW()
+);
+

@@ -3,12 +3,15 @@
   flex-direction: column;
   gap: 16px;
   padding: 24px;
+  width: 100%;
+  max-width: 760px;
 }
 
 .dropzone {
   border: 2px dashed rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: 8px;
   min-height: 220px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,10 +39,12 @@
   flex-direction: column;
   gap: 8px;
   align-items: center;
+  max-width: 100%;
+  padding: 24px;
 }
 
 .dropzone-icon {
-  font-size: 40px;
+  font-size: 32px;
 }
 
 .dropzone-hint {
@@ -48,27 +53,28 @@
   opacity: 0.7;
 }
 
-.preview-img {
-  max-width: 100%;
-  max-height: 320px;
-  border-radius: 8px;
-  object-fit: contain;
-}
-
 .file-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   font-size: 13px;
+  min-width: 0;
 }
 
 .file-meta > div {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
+}
+
+.file-meta strong,
+.file-meta span {
+  overflow-wrap: anywhere;
 }
 
 .file-meta span {
@@ -95,21 +101,32 @@
   color: var(--text-secondary);
 }
 
+.upload-field input,
+.upload-field select,
 .upload-field textarea {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   color: var(--text-primary);
   font-family: inherit;
   font-size: 14px;
+  width: 100%;
   resize: vertical;
   outline: none;
   transition: var(--transition);
 }
 
+.upload-field input:focus,
+.upload-field select:focus,
 .upload-field textarea:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
+}
+
+.upload-field select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .upload-error {
@@ -124,6 +141,7 @@
 .upload-actions {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
 .upload-submit {
@@ -161,35 +179,25 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.upload-response {
-  background: var(--status-success-bg);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.upload-response strong {
-  color: var(--status-success);
-}
-
-.upload-response pre {
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 11px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin: 0;
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
+  .upload-form {
+    padding: 18px;
+  }
+
+  .dropzone {
+    min-height: 180px;
+  }
+
   .upload-actions {
     flex-direction: column;
   }
+
+  .upload-submit,
+  .upload-reset {
+    width: 100%;
+  }
+
   .file-meta {
     flex-direction: column;
     align-items: flex-start;

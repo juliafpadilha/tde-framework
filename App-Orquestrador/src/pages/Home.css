@@ -1,6 +1,6 @@
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 24px;
   margin-bottom: 32px;
 }
@@ -32,6 +32,7 @@
   gap: 16px;
   padding-top: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 0;
 }
 
 .bar {
@@ -42,6 +43,21 @@
   transform-origin: bottom;
   opacity: 0.8;
   transition: var(--transition);
+}
+
+@media (max-width: 520px) {
+  .chart-placeholder {
+    min-height: 240px;
+    padding: 18px;
+  }
+
+  .fake-chart {
+    gap: 8px;
+  }
+
+  .bar {
+    width: 24px;
+  }
 }
 
 .bar:hover {

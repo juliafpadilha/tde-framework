@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use('/uploads', express.static(uploadsDir));
 // -----------------------------------------------
 app.use(authRoutes);   // POST /register, POST /login
 app.use(jobRoutes);    // GET /jobs, POST /jobs
+app.use(messageRoutes); // POST /messages
 
 // Rota raiz (health check)
 app.get('/', (_req, res) => {
