@@ -145,14 +145,38 @@ O Vite mostrara a URL local da aplicacao. Por padrao:
 http://localhost:5173
 ```
 
-## Fluxo de uso
+## Arquitetura e Detalhes Tecnicos
 
-1. Acesse `http://localhost:5173`.
-2. Entre em **Cadastre-se** e crie um usuario.
-3. Volte para o login e autentique com usuario e senha.
-4. A aplicacao salva o token JWT no `localStorage`.
-5. Acesse a lista de jobs em `/lista`.
-6. Crie novos jobs com ou sem arquivo em `/upload`.
+### Fluxo de Autenticacao (JWT)
+
+A aplicacao utiliza JSON Web Tokens (JWT) para gerenciar o estado da sessao de forma segura e stateless.
+1. **Login:** O usuario envia as credenciais (usuario e senha) para a rota `POST /login`.
+2. **Geracao do Token:** O back-end (Node.js/Express) valida as credenciais consultando o PostgreSQL (senhas hasheadas com `bcrypt`). Se corretas, ele gera um JWT assinado com a `JWT_SECRET`, contendo o ID e o nome do usuario, com validade de 8 horas.
+3. **Armazenamento:** O front-end (React) recebe esse token e o armazena no `localStorage` do navegador sob a chave `tde.auth`.
+4. **Requisicoes Protegidas:** Toda vez que o front-end precisa acessar uma rota protegida (ex: `/jobs`), o cliente http em `api.js` resgata o token do `localStorage` e o insere automaticamente no cabecalho HTTP: `Authorization: Bearer <token>`.
+5. **Validacao:** No back-end, o `authMiddleware` verifica a assinatura e validade do token em todas as rotas protegidas antes de permitir o acesso.
+
+### Integracao Front-end e API
+
+A comunicacao entre a SPA (Front-end) e a API REST (Back-end) ocorre atraves de requisicoes HTTP:
+- **Cliente HTTP Centralizado:** O arquivo `App-Orquestrador/src/services/api.js` funciona como um client em volta da API nativa `fetch`. Ele consolida regras importantes como a url base (`http://localhost:3000`), controle de *timeouts*, injecao automatica de headers de autenticacao e parseamento padronizado de erros e respostas em JSON.
+- **Uploads de Arquivos (Multipart):** Para as rotas de criacao e edicao de *jobs* que suportam upload de arquivo, o front-end usa `FormData`. O navegador configura automaticamente os cabecalhos de *multipart/form-data*. No lado do servidor, a biblioteca `multer` intercepta a requisicao, salva o arquivo na pasta `backend/uploads` e armazena o caminho (`file_url`) no banco de dados, para que possa ser servido estaticamente futuramente.
+
+## Fluxo de Navegacao e Uso do Site
+
+O fluxo principal da interface com o usuario foi desenhado para ser simples e intuitivo:
+
+1. **Acesso Inicial:** Ao acessar `http://localhost:5173`, se o usuario nao estiver logado, sera redirecionado para a tela de **Login** (`/login`).
+2. **Cadastro:** Novos usuarios devem acessar a tela de **Cadastro** (`/cadastro`) para registrar nome, email, nome de usuario e senha.
+3. **Autenticacao:** De volta ao **Login**, ao inserir as credenciais corretas, o usuario e redirecionado para o dashboard principal (rota `/`).
+4. **Dashboard Principal (`/`):** Pagina inicial autenticada (Home) que exibe informacoes gerais. Gracas ao componente `MainLayout`, o usuario passa a ver a barra de navegacao lateral ou superior.
+5. **Gerenciamento de Jobs:**
+   - **Lista (`/lista`):** Exibe todos os jobs criados no sistema, mostrando o status atual, quem o criou e se ha arquivos atrelados. Tambem conta com o botao de "Ativar" para processar o job (gerando Sucesso ou Erro).
+   - **Criacao/Upload (`/upload`):** Formulario para a criacao de um novo Job de ETL, onde e possivel dar um nome ao Job e anexar um arquivo opcionalmente.
+6. **Outras Paginas:**
+   - **Sobre (`/sobre`):** Exibe detalhes sobre a aplicacao.
+   - **Contato (`/contato`):** Formulario para envio de mensagens de suporte/feedback direto ao time de desenvolvimento.
+7. **Logout:** O usuario pode encerrar a sessao no menu; a acao remove o token armazenado localmente e o redireciona de volta a tela de Login.
 
 ## Rotas da API
 
